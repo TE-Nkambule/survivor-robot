@@ -64,3 +64,5 @@ This project is a critical component in the fight against robots that have taken
 # API Documentation Section
 - Spring boot information https://spring.io/tools/
 - I have attached a word document that has all my APIs and endpoints.
+
+# N.B. DON'T FORGET TO SMILE.
