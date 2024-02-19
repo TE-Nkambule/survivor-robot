@@ -1,6 +1,6 @@
 package com.robot.survivormanagement.entity;
 
-import com.robot.survivormanagement.CategoryOption;
+import com.robot.survivormanagement.Category_option;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,10 +12,11 @@ public class Robot {
     @Id
     private String model;
 
-    private String serialNumber;
-    private Timestamp manufacturedDate;
+    private String serial_number;
+    private Timestamp manufactured_date;
+
     @Enumerated(EnumType.STRING)
-    private CategoryOption categoryOption;
+    private Category_option category_option;
 
 
 }

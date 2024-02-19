@@ -14,7 +14,7 @@ public class Flag {
     @Column(name = "id")
     private String id;
 
-    @Column(name = "noOfReports")
+    @Column(name = "no_of_reports")
     private int noOfReports;
 
     private boolean status;

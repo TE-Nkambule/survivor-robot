@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 @RestController
@@ -17,42 +18,35 @@ public class SurvivorController {
     @Autowired
     private SurvivorServiceInterface survivorServiceInterface;
     @Autowired
-    private LocationServiceInterface locationServiceInterface;
-    @Autowired
     private FlagServiceInterface flagServiceInterface;
-    @Autowired
-    private InventoryServiceInterface inventoryServiceInterface;
 
     //Creating a survivor
     @PostMapping
     public ResponseEntity<Survivor> postASurvivor(@RequestBody Survivor survivor) {
 
         try {
-            Survivor screatedSurvivor = survivorServiceInterface.createATeam(survivor);
+            Survivor screatedSurvivor = survivorServiceInterface.createSurvivor(survivor);
             return ResponseEntity.status(HttpStatus.CREATED).body(screatedSurvivor);
         } catch (Exception e){
 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
     }
 
-    //"/survivor/inventory"
-    @PostMapping("/inventory")
-    public ResponseEntity<Inventory> postInventory(@RequestBody Inventory inventory) {
+    @PutMapping
+    public ResponseEntity<Inventory> updateInventory(@RequestParam String survivorId, @RequestBody Inventory inventory){
+        boolean successfullyUpdated = survivorServiceInterface.createInventory(survivorId, inventory);
 
-        try {
-            Inventory createInventory = inventoryServiceInterface.createATeam(inventory);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createInventory);
-        } catch (Exception e){
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        if (successfullyUpdated){
+            return ResponseEntity.ok().build();
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
     }
 
     //Getting a list of all survivors
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<List<Survivor>> getAllSurvivors() {
         List<Survivor> survivors = survivorServiceInterface.listOfSurvivors();
 
@@ -70,7 +64,7 @@ public class SurvivorController {
         Survivor existingSurvivor = survivorServiceInterface.getSurvivorById(survivorId);
 
         if (existingSurvivor != null) {
-            Location savedLocation = locationServiceInterface.updateLocationData(survivorId, location);
+            Location savedLocation = survivorServiceInterface.updateLocationData(survivorId, location);
             return ResponseEntity.ok(savedLocation);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -107,7 +101,7 @@ public class SurvivorController {
 
     //Get percentage of infected
     @GetMapping("/infected/percentage")
-    public ResponseEntity<Float> percentageOfInfected() {
+    public ResponseEntity<String> percentageOfInfected() {
         List<Survivor> survivors = survivorServiceInterface.listOfSurvivors();
 
         if (!survivors.isEmpty()) {
@@ -117,7 +111,11 @@ public class SurvivorController {
                 int noOfSurvivors = (int) survivorServiceInterface.listOfSurvivors().size();
 
                 float infectedPercentage = ((float) noOfInfected / noOfSurvivors) * 100;
-                return ResponseEntity.ok(infectedPercentage);
+
+                DecimalFormat df = new DecimalFormat("#.##");
+                String roundedPercentage = df.format(infectedPercentage);
+
+                return ResponseEntity.ok(roundedPercentage);
             } else {
                 System.err.println("Yay! There are no infected survivors!!");
                 return ResponseEntity.noContent().build();
@@ -129,10 +127,9 @@ public class SurvivorController {
     }
 
 
-
     //Get percentage of non-infected
     @GetMapping("/non-infected/percentage")
-    public ResponseEntity<Float> percentageOfNonInfected() {
+    public ResponseEntity<String> percentageOfNonInfected() {
         List<Survivor> survivors = survivorServiceInterface.listOfSurvivors();
 
         if (!survivors.isEmpty()) {
@@ -142,7 +139,11 @@ public class SurvivorController {
                 int noOfSurvivors = (int) survivorServiceInterface.listOfSurvivors().size();
 
                 float nonInfectedPercentage = ((float) noOfNonInfected / noOfSurvivors) * 100;
-                return ResponseEntity.ok(nonInfectedPercentage);
+
+                DecimalFormat df = new DecimalFormat("#.##");
+                String roundedPercentage = df.format(nonInfectedPercentage);
+
+                return ResponseEntity.ok(roundedPercentage);
             } else {
                 System.err.println("Oh no, all survivors are infected...");
                 return ResponseEntity.noContent().build();

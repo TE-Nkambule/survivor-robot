@@ -1,6 +1,6 @@
 package com.robot.survivormanagement;
 
-public enum CategoryOption {
+public enum Category_option {
     Land,
     Flying
 }

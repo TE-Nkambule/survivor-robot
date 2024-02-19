@@ -4,7 +4,7 @@
 
 CREATE TABLE "flag" (
 	"id"			text PRIMARY KEY,	
-	"noOfReports"	int,
+	"no_of_reports"	int,
 	"status"		boolean 
 );
 
@@ -15,12 +15,13 @@ CREATE TABLE "location" (
 );
 
 CREATE TABLE "inventory" (
-	"id"			text PRIMARY KEY,	
-	"water"			boolean,
-	"food"			boolean,
-	"medication"	boolean,
-	"ammunition"	boolean 
+    "id"            text PRIMARY KEY,
+    "water"         boolean DEFAULT false,
+    "food"          boolean DEFAULT false,
+    "medication"    boolean DEFAULT false,
+    "ammunition"    boolean DEFAULT false
 );
+
 
 CREATE TYPE gender AS ENUM ('Male', 'Female');
 
@@ -34,13 +35,13 @@ CREATE TABLE "survivor" (
   "inventory_id"		text REFERENCES "inventory"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TYPE categoryOption AS ENUM ('Land', 'Flying');
+CREATE TYPE category_option AS ENUM ('Land', 'Flying');
 
 CREATE TABLE "robot" (
 	"model"				      text PRIMARY KEY,
-	"serialNumber"		  text UNIQUE,
-	"manufacturedDate"	timestamp with time zone,
-	"categoryOption"		categoryOption 
+	"serial_number"		  text UNIQUE,
+	"manufactured_date"	timestamp with time zone,
+	"category_option"		category_option
 );
 
 -- Populate the "location" table
@@ -55,7 +56,7 @@ VALUES
  
 
 -- Populate the "flag" table
-INSERT INTO "flag" ("id","noOfReports", "status") 
+INSERT INTO "flag" ("id","no_of_reports", "status")
 VALUES
   ('F1', 3, true),
   ('F2', 0, false),

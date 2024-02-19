@@ -19,7 +19,6 @@ public class FlagService implements FlagServiceInterface {
 
     //Reporter - the one reporting the person who is infected
     //Reported is the infected person
-    @Transactional
     public boolean report(String reporterId, String reportedId) {
         Survivor reporter = survivorRespository.findById(reporterId).orElse(null);
         Survivor reported = survivorRespository.findById(reportedId).orElse(null);
@@ -29,6 +28,12 @@ public class FlagService implements FlagServiceInterface {
             int newNoOfReports = flag.getNoOfReports() + 1;
 
             flag.setNoOfReports(newNoOfReports);
+            flagRepository.save(flag);
+
+            if (flag.getNoOfReports() >= 3){
+             flag.setStatus(true);
+             flagRepository.save(flag);
+            }
             return true;
         }else {
 
